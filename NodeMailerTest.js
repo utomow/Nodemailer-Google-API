@@ -21,7 +21,15 @@ const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_U
 // Setting the refresh token credentials for the oauth2 access object
 oAuth2Client.setCredentials({refresh_token: REFRESH_TOKEN})
 
-async function sendMail() {
+const mailOptions = {
+  from: "Administrator <homy.evolveu@gmail.com>",
+  to: "bejo.romes87@gmail.com",
+  subject: "Request #00000008 status changed",
+  text: "Your service request #00000008 status has changed",
+  html: "<h1>Your service request #00000008 status has changed</h1>"
+}
+
+async function sendMail(mail) {
   try {
     // getting access token from google with oauth2 object through getAccessToken method. FYI, the accessToken has expiry of 1 hour
     // That is why it is always needed to get new access token before sending the mail
@@ -44,17 +52,10 @@ async function sendMail() {
   
     // Creating the mail options object to be passed on when sending the mail
     // This is where we create the email itself for the header and body of the email.
-    const mailOptions = {
-      from: "Administrator <homy.evolveu@gmail.com>",
-      to: "bejo.romes87@gmail.com",
-      subject: "Request #00000008 status changed",
-      text: "Your service request #00000008 status has changed",
-      html: "<h1>Your service request #00000008 status has changed</h1>"
-    }
 
     // Sending the email, transport class has sendMail method for sending the email. It is an async function and return a promise
     // therefore put the await when calling
-    const result = await transport.sendMail(mailOptions)
+    const result = await transport.sendMail(mail)
     return result;  // Getting return value from transport.sendMail which contains the confirmation and other information
 
   } catch (error) {
@@ -64,6 +65,6 @@ async function sendMail() {
 
 
 // Calling our sendMail function
-sendMail()
+sendMail(mailOptions)
   .then(result => console.log("Email sent...", result))
   .catch((error) => console.log(error.message));
